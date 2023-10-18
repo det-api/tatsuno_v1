@@ -178,6 +178,7 @@ export const addDetailSale = async (
   body: Data
 ) => {
   try {
+    //for time
     const currentDate = moment().tz("Asia/Yangon").format("YYYY-MM-DD");
     const cuurentDateForVocono = moment().tz("Asia/Yangon").format("DDMMYYYY");
 
@@ -193,6 +194,8 @@ export const addDetailSale = async (
 
     let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
+
+    // get today count 
     const count = await detailSaleModel.countDocuments({
       dailyReportDate: currentDate,
     });
@@ -272,7 +275,7 @@ export const addDetailSale = async (
       );
     }
 
-    mqttEmitter(`detpos/local_server/${depNo}`, nozzleNo + "appro");
+    mqttEmitter(`detpos/local_server/${depNo}`, nozzleNo + `appro${1000}`);
 
     return result;
   } catch (e) {
