@@ -19,6 +19,7 @@ import dbConnect, { client, connect } from "./utils/connect";
 import blinkLed, { lowLed } from "./connection/ledBlink";
 import initialSetupRoute from "./router/initialSetup.routes";
 import { rp } from "./migrations/migrator";
+import { getLastPrice } from "./service/dailyPrice.service";
 
 const app = express();
 app.use(fileUpload());
@@ -31,10 +32,7 @@ client.on("connect", connect);
 client.on("message", async (topic, message) => {
   let data = topic.split("/");
 
-  console.log(data);
-
-  // if (topic == "detpos/local_server/4") {
-  // }
+  console.log(data , message.toString());
 
   if (data[2] == "active") {
     //d blinkLed(Number(data[3]));
@@ -45,32 +43,15 @@ client.on("message", async (topic, message) => {
     detailSaleUpdateByDevice(data[3], message.toString());
   }
 
-    if (data[2] == "livedata") {
-      liveDataChangeHandler(message.toString());
-    }
+  if (data[2] == "livedata") {
+    liveDataChangeHandler(message.toString());
+  }
 
-  //   if (topic == "detpos/local_server/price") {
-  //   }
+  if(data[2] == "pricereq"){
+    getLastPrice( message.toString());
+  }
+
 });
-
-// socket
-
-// const io = require("socket.io-client");
-
-// let socket = io.connect("cloud socket url");
-
-// socket.on("connect", () => {
-
-//   // Send data to the Raspberry Pi server
-//   socket.emit("test", "Hello from local");
-
-//   // Receive data from the Raspberry Pi server
-//   socket.on("test", (data) => {
-//   });
-// });
-
-// socket.on("disconnect", () => {
-// });
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");

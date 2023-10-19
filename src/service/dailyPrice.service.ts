@@ -1,6 +1,8 @@
 import { FilterQuery, UpdateQuery } from "mongoose";
 import config from "config";
 import dailyPriceModel, { dailyPriceDocument } from "../model/dailyPrice.model";
+import { getDevice } from "./device.service";
+import { mqttEmitter } from "../utils/helper";
 
 export const getDailyPrice = async (query: FilterQuery<dailyPriceDocument>) => {
   try {
@@ -60,5 +62,18 @@ export const deleteDailyPrice = async (
     return await dailyPriceModel.deleteMany(query);
   } catch (e) {
     throw new Error(e);
+  }
+};
+
+export const getLastPrice = async (nozzleNo) => {
+  try {
+    let device = await getDevice({ nozzle_no: nozzleNo });
+    console.log(device[0].daily_price);
+    mqttEmitter(
+      `detpos/local_server/price`,
+      `${nozzleNo}${device[0].daily_price.toString().padStart(4, "0")}`
+    );
+  } catch (e) {
+    console.log(e);
   }
 };

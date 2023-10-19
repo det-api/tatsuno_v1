@@ -275,7 +275,7 @@ export const addDetailSale = async (
       );
     }
 
-    mqttEmitter(`detpos/local_server/${depNo}`, nozzleNo + `appro${2500}`);
+    mqttEmitter(`detpos/local_server/${depNo}`, nozzleNo + "appro");
 
     return result;
   } catch (e) {
