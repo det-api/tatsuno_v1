@@ -194,8 +194,7 @@ export const addDetailSale = async (
 
     let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
-
-    // get today count 
+    // get today count
     const count = await detailSaleModel.countDocuments({
       dailyReportDate: currentDate,
     });
@@ -379,6 +378,7 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
         lastData[1].totalizer_liter + Number(saleLiter ? saleLiter : 0),
       totalizer_amount:
         lastData[1].totalizer_amount + Number(totalPrice ? totalPrice : 0),
+      devTotalizar_liter: data[4],
     };
 
     await detailSaleModel.findByIdAndUpdate(lastData[0]._id, updateBody);
@@ -615,12 +615,11 @@ export const detailSaleByDateAndPagi = async (
 };
 
 export const initialDetail = async (body) => {
-  try{
-    body.vocono = Date.now()
-    console.log(body)
+  try {
+    body.vocono = Date.now();
+    console.log(body);
     return await new detailSaleModel(body).save();
-
-  }catch(e) {
+  } catch (e) {
     throw e;
   }
 };
